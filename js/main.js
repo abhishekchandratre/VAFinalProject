@@ -1,6 +1,8 @@
 var height;
 var width;
 var Location = [];
+var chart_svg;
+
 
 function draw() {
 	set_height_and_widht();
@@ -36,6 +38,16 @@ function create_svg_placeholder() {
 		.style("stroke", "black")
 		.style("fill", "none")
 		.style("stroke-width", border);
+}
+
+function draw_rectangle(w, h, x, y, fill, fill_opacity) {
+	svg.append("rect")
+		.attr("width", w)
+		.attr("height", h)
+		.attr("x", x)
+		.attr("y", y)
+		.style("fill", fill)
+		.style("fill-opacity", fill_opacity);
 }
 
 function read_files() {
