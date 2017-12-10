@@ -63,7 +63,7 @@ function draw_rectangle(w, h, x, y, fill, fill_opacity, dept_name, last_block) {
       .attr("font-size", "16px")
       .attr("text-anchor", "middle")
       .text(dept_name);
-	  
+
 	  if(last_block == 0) {
 		  chart_svg.append("line")
 				 .attr("x1",x+50)  
@@ -94,7 +94,7 @@ function draw_departments() {
 	draw_rectangle(50,30,100,650,"#66ccff",1,'Pre-Paint Chassis',0);
 	draw_rectangle(50,30,300,650,"#66ccff",1,'Final Chassis',0);
 	draw_rectangle(50,30,500,650,"#66ccff",1,'Offline',0);
-	draw_rectangle(50,30,700,650,"#66ccff",1,'Sold',1);
+	draw_rectangle(50,30,700,650,"#66ccff",1,'SOLD',1);
 }
 
 function read_files() {
@@ -127,7 +127,7 @@ function create_time_line() {
 	var timeSlider =  d3.select('#slider7')
 	timeSlider.call(d3.slider().on("slide", function(evt, value) {
 		// slider handle
-		slider_time = xScale.invert(value);
+		slider_time = xScale.invert(value).getTime();
 		handle_slider();
 	}));
 }
