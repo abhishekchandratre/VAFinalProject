@@ -4,11 +4,15 @@ var Location = [];
 var chart_svg;
 var slider_time = new Date();
 var vehicle_count = {'Cab In White':0, 'Paint':0, 'Final Cab':0, 'Pre-Paint Chassis':0, 'Final Chassis':0, 'Offline':0, 'SOLD':0};
+var dept_x = [110,310,510,110,310,510,710]
+var dept_y = [350,350,350,650,650,650,650]
+var avg = 0, max = 0, avg_length = 0;
 
 function draw() {
 	set_height_and_widht();
 	create_svg_placeholder();
 	read_files();
+	draw_departments();
 }
 
 function set_height_and_widht() {
@@ -51,9 +55,11 @@ function draw_rectangle(w, h, x, y, fill, fill_opacity, dept_name, last_block) {
 		.style("fill", fill)
 		.style("fill-opacity", fill_opacity)
 		.on('click',function() {
+			console.log("Average:" +  Math.round(avg))
+			console.log("Max:" + max)
 			console.log("Department: " + dept_name);
 			console.log("Slider Time: " + slider_time);
-			window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
+			//window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
 		});
 		
 	 chart_svg.append("text")
@@ -97,6 +103,51 @@ function draw_departments() {
 	draw_rectangle(50,30,700,650,"#66ccff",1,'Sold',1);
 }
 
+function calculate_max_avg() {
+	var sum = 0;
+	max = 0
+	//calculate the sum
+	for (let key in vehicle_count) {
+		sum += vehicle_count[key];
+		if(vehicle_count[key] > max) {
+			max = vehicle_count[key]
+		}
+	}
+	
+	// find the average
+	avg = sum/7;
+}
+				
+function draw_stacked_bars(){
+	var i = 0;
+	avg_length = avg * (200/max);
+	//w, h, x, y, fill, fill_opacity, dept_name, last_block
+	for (let key in vehicle_count) {
+		h = vehicle_count[key] * (200/max);
+		if(vehicle_count[key] <= avg) {
+			draw_bar_rectangles(30,h,dept_x[i],dept_y[i] - h,"#33cc33",1,vehicle_count[key]);
+		}
+		else {
+			draw_bar_rectangles(30,avg_length,dept_x[i],dept_y[i] - avg_length,"#33cc33",1,vehicle_count[key]);
+			draw_bar_rectangles(30,h - avg_length,dept_x[i],dept_y[i] - h,"#ff0000",1,vehicle_count[key]);
+		}
+		i = i + 1;
+	}	
+}
+
+function draw_bar_rectangles(w, h, x, y, fill, fill_opacity) {
+		chart_svg.append("rect")
+		.attr("id", "bars")
+		.attr("width", w)
+		.attr("height", h)
+		.attr("x", x)
+		.attr("y", y)
+		.attr("stroke","black")  
+		.attr("stroke-width",2) 
+		.style("fill", fill)
+		.style("fill-opacity", fill_opacity)
+}
+
 function read_files() {
 	// Read location file
 	d3.csv("../data/location.csv", function(data){
@@ -106,9 +157,6 @@ function read_files() {
 		Location = data;
 		create_time_line();
 	});
-	
-draw_departments();
-
 }
 
 function create_time_line() {
@@ -157,5 +205,6 @@ function handle_slider() {
 		vehicle_count[vehicle_map[key]]++;
 	}
 	console.log(vehicle_count);
-
+	calculate_max_avg();
+	draw_stacked_bars();
 }
