@@ -13,6 +13,8 @@ function draw() {
 	create_svg_placeholder();
 	read_files();
 	draw_departments();
+	chart_svg.append("g").attr("class","STACK");
+	chart_svg.append("g").attr("class","LEGEND");
 }
 
 function set_height_and_widht() {
@@ -62,7 +64,7 @@ function draw_rectangle(w, h, x, y, fill, dept_name, last_block) {
 			window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
 		});
 
-	print(x+25, y+50, dept_name, '20px','middle');
+	print(x+25, y+50, dept_name, '20px','middle', 'DEPT_NAME');
 	if(last_block == 0) {
 		chart_svg.append("line")
 			.attr("x1",x+50)  
@@ -87,6 +89,8 @@ function draw_departments() {
     .attr("d", "M 0 0 8 4 0 8 3 4")
     .style("fill", "red");
 	
+	chart_svg.append("g").attr("class","DEPT_NAME");
+
 	draw_rectangle(50,30,100,350,"#66ccff",'Cab In White', 0);
 	draw_rectangle(50,30,300,350,"#66ccff", 'Paint',0);
 	draw_rectangle(50,30,500,350,"#66ccff",'Final Cab',1);
@@ -110,40 +114,44 @@ function calculate_max_avg() {
 	// find the average
 	avg = Math.round(sum/7);
 }
+
+function draw_legend() {
+	draw_bar_rectangles(350,150,625,225,"#ffffff",'LEGEND');
+	print(800, 250, "Legend", '16px','middle','LEGEND');
+	
+	draw_bar_rectangles(30,30,650, 275, "#33cc33",'LEGEND');
+	print(700, 300, "Below average number of vehicles", '16px','start','LEGEND');
+	
+	draw_bar_rectangles(30,30,650,325,"#ff0000",'LEGEND');
+	print(700, 350, "Above average number of vehicles", '16px','start','LEGEND');
+}
 				
 function draw_stacked_bars(){
 	var i = 0;
 	avg_length = Math.round(avg * (200/max));
 	
-	draw_bar_rectangles(350,150,625,225,"#ffffff");
-	print(800, 250, "Legend", '16px','middle');
-	
-	draw_bar_rectangles(30,30,650, 275, "#33cc33");
-	print(700, 300, "Below average number of vehicles", '16px','start');
-	
-	draw_bar_rectangles(30,30,650,325,"#ff0000");
-	print(700, 350, "Above average number of vehicles", '16px','start');
-	
-	print(650, 200, "Average Number of Vehicles: " + avg, '18px','start');
-	
+	print(650, 200, "Average Number of Vehicles: " + avg, '18px','start','STACK');
+	//print(400, 150, "Time: " + slider_time, '18px','middle','STACK');
+
 	//w, h, x, y, fill, fill_opacity, dept_name, last_block
 	for (let key in vehicle_count) {
 		h = Math.round(vehicle_count[key] * (200/max));
 		if(vehicle_count[key] <= avg) {
-			draw_bar_rectangles(30,h,dept_x[i],dept_y[i] - h,"#33cc33");
+			draw_bar_rectangles(30,h,dept_x[i],dept_y[i] - h,"#33cc33",'STACK');
 		}
 		else {
-			draw_bar_rectangles(30,avg_length,dept_x[i],dept_y[i] - avg_length,"#33cc33");
-			draw_bar_rectangles(30,h - avg_length,dept_x[i],dept_y[i] - h,"#ff0000");
-			print(dept_x[i] + 45, dept_y[i] - avg_length, vehicle_count[key] - avg,'18px','middle');
+			draw_bar_rectangles(30,avg_length,dept_x[i],dept_y[i] - avg_length,"#33cc33",'STACK');
+			draw_bar_rectangles(30,h - avg_length,dept_x[i],dept_y[i] - h,"#ff0000",'STACK');
+			print(dept_x[i] + 45, dept_y[i] - avg_length, vehicle_count[key] - avg,'18px','middle','STACK');
 		}
-		print(dept_x[i]+15, dept_y[i]+20, vehicle_count[key],'18px','middle');
+		print(dept_x[i]+15, dept_y[i]+20, vehicle_count[key],'18px','middle','STACK');
 		i = i + 1;
 	}	
 }
 
-function print(x, y, s, fs, alignment) {
-	chart_svg.append("text")
+function print(x, y, s, fs, alignment, group_name) {
+	nodes = chart_svg.selectAll("g").filter("." + group_name).append("text")
+	//console.log(nodes);
       .attr("x", x)
       .attr("y", y)       
 	  .attr("font-family", "sans-serif")
@@ -152,8 +160,8 @@ function print(x, y, s, fs, alignment) {
       .text(s);
 }
 
-function draw_bar_rectangles(w, h, x, y, fill) {
-		chart_svg.append("rect")
+function draw_bar_rectangles(w, h, x, y, fill,group_name) {
+	nodes = chart_svg.selectAll("g").filter("." + group_name).append("rect")
 		.attr("id", "bars")
 		.attr("width", w)
 		.attr("height", h)
@@ -162,7 +170,7 @@ function draw_bar_rectangles(w, h, x, y, fill) {
 		.attr("stroke","black")  
 		.attr("stroke-width",2) 
 		.style("fill", fill)
-		.style("fill-opacity", 1)
+		.style("fill-opacity", 1);
 }
 
 function read_files() {
@@ -202,7 +210,7 @@ function handle_slider() {
 	let count = 0;
 	console.log(Location[0]);
 	
-	// Iterate over all Location upto slider_time
+	// It`erate over all Location upto slider_time
 	for(let index in Location) {
 		let item = Location[index];
 		if(item.TS_LOAD > slider_time) { break; }
@@ -223,5 +231,7 @@ function handle_slider() {
 	}
 	console.log(vehicle_count);
 	calculate_max_avg();
+	draw_legend();
+	d3.select("g.STACK").selectAll("*").remove();
 	draw_stacked_bars();
 }
