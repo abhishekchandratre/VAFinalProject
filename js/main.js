@@ -48,7 +48,12 @@ function draw_rectangle(w, h, x, y, fill, fill_opacity, dept_name, last_block) {
 		.attr("stroke","black")  
 		.attr("stroke-width",2) 
 		.style("fill", fill)
-		.style("fill-opacity", fill_opacity);
+		.style("fill-opacity", fill_opacity)
+		.on('click',function() {
+			console.log("Department: " + dept_name);
+			console.log("Slider Time: " + slider_time);
+			window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
+		});
 		
 	 chart_svg.append("text")
       .attr("x", x+25)
@@ -90,8 +95,6 @@ function draw_departments() {
 	draw_rectangle(50,30,500,650,"#66ccff",1,'Offline',0);
 	draw_rectangle(50,30,700,650,"#66ccff",1,'Sold',1);
 }
-
-
 
 function read_files() {
 	// Read location file
