@@ -2,7 +2,8 @@ var height;
 var width;
 var Location = [];
 var chart_svg;
-var slider_time;
+var slider_time = new Date();
+var departments = ['Cab In White', 'Paint', 'Final Cab', 'Pre-Paint Chassis', 'Final Chassis', 'Offline', 'Sold'];
 
 function draw() {
 	set_height_and_widht();
@@ -97,7 +98,7 @@ function read_files() {
 	// Read location file
 	d3.csv("../data/location.csv", function(data){
 		data.forEach(function(d) {
-			d.TS_LOAD = new Date(d.TS_LOAD)
+			d.TS_LOAD = new Date(d.TS_LOAD).getTime();
 		});
 		Location = data;
 		create_time_line();
@@ -124,6 +125,10 @@ function create_time_line() {
 	timeSlider.call(d3.slider().on("slide", function(evt, value) {
 		// slider handle
 		slider_time = xScale.invert(value);
-		console.log(slider_time);
+		handle_slider();
 	}));
+}
+
+function handle_slider() {
+
 }
