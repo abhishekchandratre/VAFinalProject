@@ -61,9 +61,8 @@ function draw_rectangle(w, h, x, y, fill, dept_name, last_block) {
 			console.log("Slider Time: " + slider_time);
 			window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
 		});
-		
+
 	print(x+25, y+50, dept_name, '20px','middle');
-	  
 	if(last_block == 0) {
 		chart_svg.append("line")
 			.attr("x1",x+50)  
@@ -88,13 +87,13 @@ function draw_departments() {
     .attr("d", "M 0 0 8 4 0 8 3 4")
     .style("fill", "red");
 	
-	draw_rectangle(50,30,100,350,"#66ccff",1,'Cab In White', 0);
-	draw_rectangle(50,30,300,350,"#66ccff",1, 'Paint',0);
-	draw_rectangle(50,30,500,350,"#66ccff",1,'Final Cab',1);
-	draw_rectangle(50,30,100,650,"#66ccff",1,'Pre-Paint Chassis',0);
-	draw_rectangle(50,30,300,650,"#66ccff",1,'Final Chassis',0);
-	draw_rectangle(50,30,500,650,"#66ccff",1,'Offline',0);
-	draw_rectangle(50,30,700,650,"#66ccff",1,'SOLD',1);
+	draw_rectangle(50,30,100,350,"#66ccff",'Cab In White', 0);
+	draw_rectangle(50,30,300,350,"#66ccff", 'Paint',0);
+	draw_rectangle(50,30,500,350,"#66ccff",'Final Cab',1);
+	draw_rectangle(50,30,100,650,"#66ccff",'Pre-Paint Chassis',0);
+	draw_rectangle(50,30,300,650,"#66ccff",'Final Chassis',0);
+	draw_rectangle(50,30,500,650,"#66ccff",'Offline',0);
+	draw_rectangle(50,30,700,650,"#66ccff",'SOLD',1);
 }
 
 function calculate_max_avg() {
