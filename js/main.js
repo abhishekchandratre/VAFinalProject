@@ -3,7 +3,7 @@ var width;
 var Location = [];
 var chart_svg;
 var slider_time = new Date();
-var departments = ['Cab In White', 'Paint', 'Final Cab', 'Pre-Paint Chassis', 'Final Chassis', 'Offline', 'Sold'];
+var vehicle_count = {'Cab In White':0, 'Paint':0, 'Final Cab':0, 'Pre-Paint Chassis':0, 'Final Chassis':0, 'Offline':0, 'SOLD':0};
 
 function draw() {
 	set_height_and_widht();
@@ -130,5 +130,29 @@ function create_time_line() {
 }
 
 function handle_slider() {
+	let vehicle_map = {}
+	let count = 0;
+	console.log(Location[0]);
+	
+	// Iterate over all Location upto slider_time
+	for(let index in Location) {
+		let item = Location[index];
+		if(item.TS_LOAD > slider_time) { break; }
+		if(item.DEPARTMENT_NAME == "Offline") {
+			delete vehicle_map[item.VEH_SER_NO]
+		}
+		vehicle_map[item.VEH_SER_NO] = item.DEPARTMENT_NAME;
+	}
+
+	// make count of all vehicle 0
+	for (let key in vehicle_count) {
+		vehicle_count[key] = 0;
+	}
+
+	//Add vehicle according to department
+	for(let key in vehicle_map) {
+		vehicle_count[vehicle_map[key]]++;
+	}
+	console.log(vehicle_count);
 
 }
