@@ -75,6 +75,16 @@ function parse_query_string(query) {
 	return query_string;
 }
 
+function print(x, y, s, fs, alignment, group_name) {
+	chart_svg.selectAll("g").filter("." + group_name).append("text")
+      .attr("x", x)
+      .attr("y", y)       
+	  .attr("font-family", "sans-serif")
+      .attr("font-size", fs)
+      .attr("text-anchor", alignment)
+      .text(s);
+}
+
 function draw_parent_chain(selected_node, selected_time) {
 	// get parent links
 	let parentName = selected_node;
