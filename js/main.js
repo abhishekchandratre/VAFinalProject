@@ -6,7 +6,6 @@ function draw() {
 	set_height_and_widht();
 	create_svg_placeholder();
 	read_files();
-	// create_time_line();
 }
 
 function set_height_and_widht() {
@@ -41,6 +40,31 @@ function create_svg_placeholder() {
 function read_files() {
 	// Read location file
 	d3.csv("../data/location.csv", function(data){
+		data.forEach(function(d) {
+			d.TS_LOAD = new Date(d.TS_LOAD)
+		});
 		Location = data;
+		create_time_line();
 	});
+}
+
+function create_time_line() {
+	console.log(Location[0])
+	let min_time = d3.min(Location, function(d,i){
+		return d.TS_LOAD;
+	});
+	let max_time = d3.max(Location, function(d,i){
+		return d.TS_LOAD;
+	});
+	console.log(min_time)
+	console.log(max_time)
+
+	let xScale = d3.time.scale().domain([min_time,max_time]).range([0,100]);
+
+	var timeSlider =  d3.select('#slider7')
+	timeSlider.call(d3.slider().on("slide", function(evt, value) {
+		console.log(xScale.invert(value));
+	}));
+
+
 }
