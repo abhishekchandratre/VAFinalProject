@@ -164,7 +164,6 @@ function draw_bar_rectangles(w, h, x, y, fill) {
 		.attr("stroke-width",2) 
 		.style("fill", fill)
 		.style("fill-opacity", 1)
->>>>>>> bd01fd8669d85a14a5a8ed73952a69d591fe430e
 }
 
 function read_files() {
