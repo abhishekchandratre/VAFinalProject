@@ -10,8 +10,10 @@ function draw() {
 }
 
 function set_height_and_widht() {
-	height = $(".chart").height() * 0.9;
-	width = $(".chart").width();
+	// height = $(".chart").height() * 0.9;
+	// width = $(".chart").width();
+	height = 800;
+	width = 1000;
 	console.log("Chart Height: " + height);
 	console.log("Chart Width: " + width);
 }
@@ -40,6 +42,5 @@ function read_files() {
 	// Read location file
 	d3.csv("../data/location.csv", function(data){
 		Location = data;
-
 	});
 }
