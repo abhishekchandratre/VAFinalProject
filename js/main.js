@@ -1,9 +1,12 @@
 var height;
 var width;
+var Location = [];
 
 function draw() {
 	set_height_and_widht();
 	create_svg_placeholder();
+	read_files();
+	// create_time_line();
 }
 
 function set_height_and_widht() {
@@ -31,4 +34,12 @@ function create_svg_placeholder() {
 		.style("stroke", "black")
 		.style("fill", "none")
 		.style("stroke-width", border);
+}
+
+function read_files() {
+	// Read location file
+	d3.csv("../data/location.csv", function(data){
+		Location = data;
+
+	});
 }
