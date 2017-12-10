@@ -59,7 +59,7 @@ function draw_rectangle(w, h, x, y, fill, dept_name, last_block) {
 			console.log("Max:" + max)
 			console.log("Department: " + dept_name);
 			console.log("Slider Time: " + slider_time);
-			//window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
+			window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
 		});
 		
 	print(x+25, y+50, dept_name, '20px','middle');
