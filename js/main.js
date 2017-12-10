@@ -62,23 +62,17 @@ function draw_rectangle(w, h, x, y, fill, fill_opacity, dept_name, last_block) {
 			//window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
 		});
 		
-	 chart_svg.append("text")
-      .attr("x", x+25)
-      .attr("y", y+50)       
-	  .attr("font-family", "sans-serif")
-      .attr("font-size", "16px")
-      .attr("text-anchor", "middle")
-      .text(dept_name);
+	print(x+25, y+50, dept_name, '20px');
 	  
-	  if(last_block == 0) {
-		  chart_svg.append("line")
-				 .attr("x1",x+50)  
-				 .attr("y1",y+15)  
-				 .attr("x2",x+192)  
-				 .attr("y2",y+15)  
-				 .attr("stroke","red")  
-				 .attr("stroke-width",2)  
-				 .attr("marker-end","url(#arrow)");  
+	if(last_block == 0) {
+		chart_svg.append("line")
+			.attr("x1",x+50)  
+			.attr("y1",y+15)  
+			.attr("x2",x+192)  
+			.attr("y2",y+15)  
+			.attr("stroke","red")  
+			.attr("stroke-width",2)  
+			.attr("marker-end","url(#arrow)");  
 	  }
 }
 
@@ -115,24 +109,37 @@ function calculate_max_avg() {
 	}
 	
 	// find the average
-	avg = sum/7;
+	avg = Math.round(sum/7);
 }
 				
 function draw_stacked_bars(){
 	var i = 0;
-	avg_length = avg * (200/max);
+	avg_length = Math.round(avg * (200/max));
+	print(700, 200, "Average Number of Vehicles: " + avg, '20px');
 	//w, h, x, y, fill, fill_opacity, dept_name, last_block
 	for (let key in vehicle_count) {
-		h = vehicle_count[key] * (200/max);
+		h = Math.round(vehicle_count[key] * (200/max));
 		if(vehicle_count[key] <= avg) {
 			draw_bar_rectangles(30,h,dept_x[i],dept_y[i] - h,"#33cc33",1,vehicle_count[key]);
 		}
 		else {
 			draw_bar_rectangles(30,avg_length,dept_x[i],dept_y[i] - avg_length,"#33cc33",1,vehicle_count[key]);
 			draw_bar_rectangles(30,h - avg_length,dept_x[i],dept_y[i] - h,"#ff0000",1,vehicle_count[key]);
+			print(dept_x[i] + 15, dept_y[i] - avg_length - 20, vehicle_count[key] - avg,'18px');
 		}
+		print(dept_x[i]+15, dept_y[i]+20, vehicle_count[key],'18px');
 		i = i + 1;
 	}	
+}
+
+function print(x, y, s, fs) {
+	chart_svg.append("text")
+      .attr("x", x)
+      .attr("y", y)       
+	  .attr("font-family", "sans-serif")
+      .attr("font-size", fs)
+      .attr("text-anchor", "middle")
+      .text(s);
 }
 
 function draw_bar_rectangles(w, h, x, y, fill, fill_opacity) {
