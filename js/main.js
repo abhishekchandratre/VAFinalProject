@@ -3,7 +3,7 @@ var width;
 var Location = [];
 var chart_svg;
 var slider_time = new Date();
-var vehicle_count = {'Cab In White':0, 'Paint':0, 'Final Cab':0, 'Pre-Paint Chassis':0, 'Final Chassis':0, 'Offline':0, 'SOLD':0};
+var vehicle_count = {'Cab In White':0, 'Paint':0, 'Final Cab':0, 'Pre-Paint Chassis':0, 'Final Chassis':0, 'Offline':0, 'Sold':0};
 var dept_x = [110,310,510,110,310,510,710]
 var dept_y = [350,350,350,650,650,650,650]
 var avg = 0, max = 0, avg_length = 0;
@@ -93,7 +93,7 @@ function draw_departments() {
 	draw_rectangle(50,30,100,650,"#66ccff",'Pre-Paint Chassis',0);
 	draw_rectangle(50,30,300,650,"#66ccff",'Final Chassis',0);
 	draw_rectangle(50,30,500,650,"#66ccff",'Offline',0);
-	draw_rectangle(50,30,700,650,"#66ccff",'SOLD',1);
+	draw_rectangle(50,30,700,650,"#66ccff",'Sold',1);
 }
 
 function calculate_max_avg() {
