@@ -44,7 +44,7 @@ function create_svg_placeholder() {
 		.style("stroke-width", border);
 }
 
-function draw_rectangle(w, h, x, y, fill, fill_opacity, dept_name, last_block) {
+function draw_rectangle(w, h, x, y, fill, dept_name, last_block) {
 	chart_svg.append("rect")
 		.attr("width", w)
 		.attr("height", h)
@@ -53,7 +53,7 @@ function draw_rectangle(w, h, x, y, fill, fill_opacity, dept_name, last_block) {
 		.attr("stroke","black")  
 		.attr("stroke-width",2) 
 		.style("fill", fill)
-		.style("fill-opacity", fill_opacity)
+		.style("fill-opacity", 1)
 		.on('click',function() {
 			console.log("Average:" +  Math.round(avg))
 			console.log("Max:" + max)
@@ -62,7 +62,7 @@ function draw_rectangle(w, h, x, y, fill, fill_opacity, dept_name, last_block) {
 			//window.location = 'focus.html' + "?dept=" + dept_name + "&slider_time=" + slider_time;
 		});
 		
-	print(x+25, y+50, dept_name, '20px');
+	print(x+25, y+50, dept_name, '20px','middle');
 	  
 	if(last_block == 0) {
 		chart_svg.append("line")
@@ -88,13 +88,13 @@ function draw_departments() {
     .attr("d", "M 0 0 8 4 0 8 3 4")
     .style("fill", "red");
 	
-	draw_rectangle(50,30,100,350,"#66ccff",1,'Cab In White', 0);
-	draw_rectangle(50,30,300,350,"#66ccff",1, 'Paint',0);
-	draw_rectangle(50,30,500,350,"#66ccff",1,'Final Cab',1);
-	draw_rectangle(50,30,100,650,"#66ccff",1,'Pre-Paint Chassis',0);
-	draw_rectangle(50,30,300,650,"#66ccff",1,'Final Chassis',0);
-	draw_rectangle(50,30,500,650,"#66ccff",1,'Offline',0);
-	draw_rectangle(50,30,700,650,"#66ccff",1,'Sold',1);
+	draw_rectangle(50,30,100,350,"#66ccff",'Cab In White', 0);
+	draw_rectangle(50,30,300,350,"#66ccff", 'Paint',0);
+	draw_rectangle(50,30,500,350,"#66ccff",'Final Cab',1);
+	draw_rectangle(50,30,100,650,"#66ccff",'Pre-Paint Chassis',0);
+	draw_rectangle(50,30,300,650,"#66ccff",'Final Chassis',0);
+	draw_rectangle(50,30,500,650,"#66ccff",'Offline',0);
+	draw_rectangle(50,30,700,650,"#66ccff",'Sold',1);
 }
 
 function calculate_max_avg() {
@@ -115,34 +115,45 @@ function calculate_max_avg() {
 function draw_stacked_bars(){
 	var i = 0;
 	avg_length = Math.round(avg * (200/max));
-	print(700, 200, "Average Number of Vehicles: " + avg, '20px');
+	
+	draw_bar_rectangles(350,150,625,225,"#ffffff");
+	print(800, 250, "Legend", '16px','middle');
+	
+	draw_bar_rectangles(30,30,650, 275, "#33cc33");
+	print(700, 300, "Below average number of vehicles", '16px','start');
+	
+	draw_bar_rectangles(30,30,650,325,"#ff0000");
+	print(700, 350, "Above average number of vehicles", '16px','start');
+	
+	print(650, 200, "Average Number of Vehicles: " + avg, '18px','start');
+	
 	//w, h, x, y, fill, fill_opacity, dept_name, last_block
 	for (let key in vehicle_count) {
 		h = Math.round(vehicle_count[key] * (200/max));
 		if(vehicle_count[key] <= avg) {
-			draw_bar_rectangles(30,h,dept_x[i],dept_y[i] - h,"#33cc33",1,vehicle_count[key]);
+			draw_bar_rectangles(30,h,dept_x[i],dept_y[i] - h,"#33cc33");
 		}
 		else {
-			draw_bar_rectangles(30,avg_length,dept_x[i],dept_y[i] - avg_length,"#33cc33",1,vehicle_count[key]);
-			draw_bar_rectangles(30,h - avg_length,dept_x[i],dept_y[i] - h,"#ff0000",1,vehicle_count[key]);
-			print(dept_x[i] + 15, dept_y[i] - avg_length - 20, vehicle_count[key] - avg,'18px');
+			draw_bar_rectangles(30,avg_length,dept_x[i],dept_y[i] - avg_length,"#33cc33");
+			draw_bar_rectangles(30,h - avg_length,dept_x[i],dept_y[i] - h,"#ff0000");
+			print(dept_x[i] + 45, dept_y[i] - avg_length, vehicle_count[key] - avg,'18px','middle');
 		}
-		print(dept_x[i]+15, dept_y[i]+20, vehicle_count[key],'18px');
+		print(dept_x[i]+15, dept_y[i]+20, vehicle_count[key],'18px','middle');
 		i = i + 1;
 	}	
 }
 
-function print(x, y, s, fs) {
+function print(x, y, s, fs, alignment) {
 	chart_svg.append("text")
       .attr("x", x)
       .attr("y", y)       
 	  .attr("font-family", "sans-serif")
       .attr("font-size", fs)
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", alignment)
       .text(s);
 }
 
-function draw_bar_rectangles(w, h, x, y, fill, fill_opacity) {
+function draw_bar_rectangles(w, h, x, y, fill) {
 		chart_svg.append("rect")
 		.attr("id", "bars")
 		.attr("width", w)
@@ -152,7 +163,7 @@ function draw_bar_rectangles(w, h, x, y, fill, fill_opacity) {
 		.attr("stroke","black")  
 		.attr("stroke-width",2) 
 		.style("fill", fill)
-		.style("fill-opacity", fill_opacity)
+		.style("fill-opacity", 1)
 }
 
 function read_files() {
