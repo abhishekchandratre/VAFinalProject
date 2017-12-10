@@ -2,6 +2,7 @@ var height;
 var width;
 var Location = [];
 var chart_svg;
+var slider_time;
 
 function draw() {
 	set_height_and_widht();
@@ -121,8 +122,8 @@ function create_time_line() {
 
 	var timeSlider =  d3.select('#slider7')
 	timeSlider.call(d3.slider().on("slide", function(evt, value) {
-		console.log(xScale.invert(value));
+		// slider handle
+		slider_time = xScale.invert(value);
+		console.log(slider_time);
 	}));
-
-
 }
