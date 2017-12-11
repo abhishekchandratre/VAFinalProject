@@ -97,20 +97,20 @@ function print(x, y, s, fs, alignment, group_name) {
 }
 
 function draw_back_button() {
-		chart_svg.select("g").filter(".nodes").append("rect")
+		chart_svg.select("g").filter(".top").append("rect")
 		.attr("width", 100)
 		.attr("height", 35)
 		.attr("x", 850)
 		.attr("y", 40)
-		.attr("stroke","black")  
-		.attr("stroke-width",2) 
+		.attr("stroke","black")
+		.attr("stroke-width",2)
 		.style("fill", "#66ccff")
 		.style("fill-opacity", 1)
 		.on('click',function() {
 			window.location = 'index.html';
 		});
 		
-	print(900, 65, 'Back', '22px', 'middle','nodes');	
+	print(900, 65, 'Back', '22px', 'middle','top');	
 		
 }
 
@@ -142,7 +142,9 @@ function draw_parent_chain() {
 			return (i + 1) * 150;
 		})
 		.attr("width", 100)
-		.attr("height",100)
+		.attr("height",50)
+		.attr("fill", "cyan")
+		.attr("stroke", "black")
 
 	// Draw parent text
 	text = chart_svg.selectAll("g").filter(".nodes").selectAll("text")
@@ -150,7 +152,7 @@ function draw_parent_chain() {
 		.enter()
 		.append("text")
 		.attr("x", 500)
-		.attr("y", function(d, i){ return (i + 1) * 150 + 120;})       
+		.attr("y", function(d, i){ return (i + 1) * 150 + 70;})       
 		.attr("font-family", "sans-serif")
 		.attr("font-size", '20px')
 		.attr("text-anchor", 'middle')
@@ -169,9 +171,9 @@ function read_files() {
 		console.log(cries_on_line);
 
 		// read item shortage
-		d3.csv("../data/item_short.csv",function(data){
+		d3.csv("../data/shortage_information.csv",function(data){
 			data.forEach(function(d) {
-				d.TS_LOAD = new Date(d['Ts Load']).getTime();
+				d.TS_LOAD = new Date(d['TS_LOAD']).getTime();
 				if (d.TS_LOAD < selected_time) {
 					item_shortage.push(d);
 				}
@@ -237,8 +239,6 @@ function prepare_for_bar_charts() {
 	// create group for bar elements;
 	chart_svg.append("g").attr("class", "cries_bars");
 	chart_svg.append("g").attr("class", "items_bars");
-	xScale_cries = d3.time.scale().domain([0,cries_on_line.length]).range([0,350]);
-	xScale_items = d3.time.scale().domain([0,item_shortage.length]).range([0,350]);
 }
 
 function remove_previous_bars() {
@@ -266,13 +266,21 @@ function draw_bar_charts() {
 		parent_list[key].items = 0;
 	}
 
-	console.log(parent_list);
 	for(let index in selected_cries) {
 		let ret_index = get_index(selected_cries[index].DEPARTMENT_NAME)
 		if (ret_index !== -1) {
 			parent_list[ret_index].cries++;
 		}
 	}
+	for(let index in selected_items) {
+		let ret_index = get_index(selected_items[index].DEPARTMENT_NAME)
+		if (ret_index !== -1) {
+			parent_list[ret_index].items++;
+		}
+	}
+
+	xScale_cries = d3.time.scale().domain([0,cries_on_line.length]).range([0,700]);
+	xScale_items = d3.time.scale().domain([0,item_shortage.length]).range([0,700]);
 
 	let bars_cries = chart_svg.selectAll("g").filter(".cries_bars").selectAll("rect")
 		.data(parent_list)
@@ -284,7 +292,7 @@ function draw_bar_charts() {
 		})
 		.attr("fill", "blue")
 		.attr("width", function(d) { return xScale_cries(d.cries) })
-		.attr("height",100)
+		.attr("height",50)
 
 	let bars_items = chart_svg.selectAll("g").filter(".items_bars").selectAll("rect")
 		.data(parent_list)
@@ -295,15 +303,15 @@ function draw_bar_charts() {
 			return (i + 1) * 150;
 		})
 		.attr("fill", "green")
-		.attr("width", function(d) { return 450 - xScale_items(d.items) })
-		.attr("height",100)
+		.attr("width", function(d) { return xScale_items(d.items) })
+		.attr("height",50)
 
 	let text_cires = chart_svg.selectAll("g").filter(".cries_bars").selectAll("text")
 		.data(parent_list)
 		.enter()
 		.append("text")
 		.attr("x", function(d){ return 420 - xScale_cries(d.cries) })
-		.attr("y", function(d, i){ return (i + 1) * 150 + 50; })
+		.attr("y", function(d, i){ return (i + 1) * 150 + 30; })
 		.attr("font-family", "sans-serif")
 		.attr("font-size", '20px')
 		.attr("text-anchor", 'middle')
@@ -313,8 +321,8 @@ function draw_bar_charts() {
 		.data(parent_list)
 		.enter()
 		.append("text")
-		.attr("x", xScale_items(selected_items.length) + 480)
-		.attr("y", function(d, i){ return (i + 1) * 150 + 120; })
+		.attr("x", function(d) { return xScale_items(d.items) + 570; })
+		.attr("y", function(d, i){ return (i + 1) * 150 + 30; })
 		.attr("font-family", "sans-serif")
 		.attr("font-size", '20px')
 		.attr("text-anchor", 'middle')
