@@ -22,7 +22,7 @@ function draw() {
 
 	// draw parent chain
 	draw_parent_chain(selected_node, selected_time);
-
+	draw_back_button();
 	read_files();
 }
 
@@ -85,6 +85,24 @@ function print(x, y, s, fs, alignment, group_name) {
       .text(s);
 }
 
+function draw_back_button() {
+		chart_svg.select("g").filter(".nodes").append("rect")
+		.attr("width", 100)
+		.attr("height", 35)
+		.attr("x", 850)
+		.attr("y", 40)
+		.attr("stroke","black")  
+		.attr("stroke-width",2) 
+		.style("fill", "#66ccff")
+		.style("fill-opacity", 1)
+		.on('click',function() {
+			window.location = 'index.html';
+		});
+		
+	print(900, 65, 'Back', '22px', 'middle','nodes');	
+		
+}
+
 function draw_parent_chain(selected_node, selected_time) {
 	// get parent links
 	let parentName = selected_node;
@@ -95,9 +113,11 @@ function draw_parent_chain(selected_node, selected_time) {
 	}
 	console.log(parent_list);
 
-
-	// Draw parents links
 	chart_svg.append("g").attr("class", "nodes")
+	print(200, 125, 'Cries On Line', '18px', 'middle','nodes');
+	print(750, 125, 'Item Shortage', '18px', 'middle','nodes');
+	
+	// Draw parents links
 	nodes = chart_svg.select("g").filter(".nodes").selectAll("rect")
 		.data(parent_list)
 		.enter()
