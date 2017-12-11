@@ -32,8 +32,8 @@ function draw() {
 	// draw parent chain
 	draw_parent_chain(selected_node, selected_time);
 
-
 	// read files and start processing
+	draw_back_button();
 	read_files();
 }
 
@@ -86,6 +86,34 @@ function parse_query_string(query) {
 	return query_string;
 }
 
+function print(x, y, s, fs, alignment, group_name) {
+	chart_svg.selectAll("g").filter("." + group_name).append("text")
+      .attr("x", x)
+      .attr("y", y)       
+	  .attr("font-family", "sans-serif")
+      .attr("font-size", fs)
+      .attr("text-anchor", alignment)
+      .text(s);
+}
+
+function draw_back_button() {
+		chart_svg.select("g").filter(".nodes").append("rect")
+		.attr("width", 100)
+		.attr("height", 35)
+		.attr("x", 850)
+		.attr("y", 40)
+		.attr("stroke","black")  
+		.attr("stroke-width",2) 
+		.style("fill", "#66ccff")
+		.style("fill-opacity", 1)
+		.on('click',function() {
+			window.location = 'index.html';
+		});
+		
+	print(900, 65, 'Back', '22px', 'middle','nodes');	
+		
+}
+
 function draw_parent_chain() {
 	// get parent links
 	let parentName = selected_node;
@@ -98,12 +126,14 @@ function draw_parent_chain() {
 		parent_list.push(new_node);
 		parentName = parents[parentName];
 	}
-	console.log(parent_list);
 
-
-	// Draw parents links
+	chart_svg.append("g").attr("class", "top")
 	chart_svg.append("g").attr("class", "nodes")
-	nodes = chart_svg.select("g").filter(".nodes").selectAll("rect")
+	print(200, 125, 'Cries On Line', '18px', 'middle','top');
+	print(750, 125, 'Item Shortage', '18px', 'middle','top');
+	
+	// Draw parents links
+	nodes = chart_svg.selectAll("g").filter(".nodes").selectAll("rect")
 		.data(parent_list)
 		.enter()
 		.append("rect")
@@ -114,7 +144,8 @@ function draw_parent_chain() {
 		.attr("width", 100)
 		.attr("height",100)
 
-	text = chart_svg.select("g").filter(".nodes").selectAll("text")
+	// Draw parent text
+	text = chart_svg.selectAll("g").filter(".nodes").selectAll("text")
 		.data(parent_list)
 		.enter()
 		.append("text")
@@ -135,6 +166,7 @@ function read_files() {
 				cries_on_line.push(d);
 			}
 		});
+		console.log(cries_on_line);
 
 		// read item shortage
 		d3.csv("../data/item_short.csv",function(data){
@@ -214,6 +246,15 @@ function remove_previous_bars() {
 	chart_svg.selectAll("g").filter(".items_bars").selectAll("*").remove();
 }
 
+function get_index(deptName) {
+	for(let index in parent_list) {
+		if(parent_list[index].name == deptName) {
+			return index;
+		}
+	}
+	return -1;
+}
+
 function draw_bar_charts() {
 	let current_list = []
 	remove_previous_bars();
@@ -225,9 +266,13 @@ function draw_bar_charts() {
 		parent_list[key].items = 0;
 	}
 
-	// for(let index in selected_cries) {
-	// 	parent_list[selected_cries.]
-	// }
+	console.log(parent_list);
+	for(let index in selected_cries) {
+		let ret_index = get_index(selected_cries[index].DEPARTMENT_NAME)
+		if (ret_index !== -1) {
+			parent_list[ret_index].cries++;
+		}
+	}
 
 	let bars_cries = chart_svg.selectAll("g").filter(".cries_bars").selectAll("rect")
 		.data(parent_list)
@@ -238,7 +283,7 @@ function draw_bar_charts() {
 			return (i + 1) * 150;
 		})
 		.attr("fill", "blue")
-		.attr("width", xScale_cries(selected_cries.length))
+		.attr("width", function(d) { return xScale_cries(d.cries) })
 		.attr("height",100)
 
 	let bars_items = chart_svg.selectAll("g").filter(".items_bars").selectAll("rect")
@@ -257,8 +302,8 @@ function draw_bar_charts() {
 		.data(parent_list)
 		.enter()
 		.append("text")
-		.attr("x", 420 - xScale_cries(selected_cries.length))
-		.attr("y", function(d, i){ return (i + 1) * 150 + 120; })
+		.attr("x", function(d){ return 420 - xScale_cries(d.cries) })
+		.attr("y", function(d, i){ return (i + 1) * 150 + 50; })
 		.attr("font-family", "sans-serif")
 		.attr("font-size", '20px')
 		.attr("text-anchor", 'middle')

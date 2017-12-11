@@ -116,21 +116,21 @@ function calculate_max_avg() {
 }
 
 function draw_legend() {
-	draw_bar_rectangles(350,150,625,225,"#ffffff",'LEGEND');
-	print(800, 250, "Legend", '16px','middle','LEGEND');
+	draw_bar_rectangles(350,150,625,75,"#ffffff",'LEGEND');
+	print(800, 100, "Legend", '16px','middle','LEGEND');
 	
-	draw_bar_rectangles(30,30,650, 275, "#33cc33",'LEGEND');
-	print(700, 300, "Below average number of vehicles", '16px','start','LEGEND');
+	draw_bar_rectangles(30,30,650, 125, "#33cc33",'LEGEND');
+	print(700, 150, "Number of vehicles below average", '16px','start','LEGEND');
 	
-	draw_bar_rectangles(30,30,650,325,"#ff0000",'LEGEND');
-	print(700, 350, "Above average number of vehicles", '16px','start','LEGEND');
+	draw_bar_rectangles(30,30,650,175,"#ff0000",'LEGEND');
+	print(700, 200, "Number of vehicles above average", '16px','start','LEGEND');
 }
 				
 function draw_stacked_bars(){
 	var i = 0;
 	avg_length = Math.round(avg * (200/max));
 	
-	print(650, 200, "Average Number of Vehicles: " + avg, '18px','start','STACK');
+	print(400, 100, "Average Number of Vehicles: " + avg, '20px','middle','STACK');
 	//print(400, 150, "Time: " + slider_time, '18px','middle','STACK');
 
 	//w, h, x, y, fill, fill_opacity, dept_name, last_block
