@@ -216,7 +216,7 @@ function draw_end_time(min_time, max_time) {
 	console.log(max_time);
 	let new_date = new Date(+max_time)
 	console.log(new_date);
-	let date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+	let date_string = (new_date.getMonth() + 1) + "/" + new_date.getDate() + "/" +
 		new_date.getFullYear() + " " + new_date.getHours() + ":" +
 		new_date.getMinutes() + ":" + new_date.getSeconds();
 	chart_svg.selectAll("g").filter(".end_time")
@@ -229,7 +229,7 @@ function draw_end_time(min_time, max_time) {
 	.text(date_string);
 
 	new_date = new Date(+min_time)
-	date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+	date_string = (new_date.getMonth() + 1) + "/" + new_date.getDate() + "/" +
 		new_date.getFullYear() + " " + new_date.getHours() + ":" +
 		new_date.getMinutes() + ":" + new_date.getSeconds();
 	chart_svg.selectAll("g").filter(".end_time")
@@ -244,7 +244,7 @@ function draw_end_time(min_time, max_time) {
 
 function handle_time() {
 	let new_date = new Date(slider_time)
-	let date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+	let date_string = (new_date.getMonth()+1) + "/" + new_date.getDate() + "/" +
 		new_date.getFullYear() + " " + new_date.getHours() + ":" +
 		new_date.getMinutes() + ":" + new_date.getSeconds();
 	chart_svg.selectAll("g").filter(".slider_time").selectAll("*").remove();
