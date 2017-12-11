@@ -3,6 +3,7 @@ var width;
 var Location = [];
 var chart_svg;
 var slider_time = new Date();
+var slider_value = 0;
 var vehicle_count = {'Cab In White':0, 'Paint':0, 'Final Cab':0, 'Pre-Paint Chassis':0, 'Final Chassis':0, 'Offline':0, 'Sold':0};
 var dept_x = [110,310,510,110,310,510,710]
 var dept_y = [350,350,350,650,650,650,650]
@@ -15,6 +16,8 @@ function draw() {
 	draw_departments();
 	chart_svg.append("g").attr("class","STACK");
 	chart_svg.append("g").attr("class","LEGEND");
+	chart_svg.append("g").attr("class","slider_time");
+	chart_svg.append("g").attr("class","end_time");
 }
 
 function set_height_and_widht() {
@@ -149,6 +152,22 @@ function draw_stacked_bars(){
 	}	
 }
 
+function handle_time() {
+	let new_date = new Date(slider_time)
+	let date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+		new_date.getFullYear() + " " + new_date.getHours() + ":" +
+		new_date.getMinutes() + ":" + new_date.getSeconds();
+	chart_svg.selectAll("g").filter(".slider_time").selectAll("*").remove();
+	chart_svg.selectAll("g").filter(".slider_time")
+	.append("text")
+	.attr("x", slider_value * 10)
+	.attr("y", 15)
+	.attr("font-family", "sans-serif")
+	.attr("font-size", '15px')
+	.attr("text-anchor", 'middle')
+	.text(date_string);
+}
+
 function print(x, y, s, fs, alignment, group_name) {
 	nodes = chart_svg.selectAll("g").filter("." + group_name).append("text")
 	//console.log(nodes);
@@ -184,6 +203,34 @@ function read_files() {
 	});
 }
 
+function draw_end_time(min_time, max_time) {
+	let new_date = new Date(max_time)
+	let date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+		new_date.getFullYear() + " " + new_date.getHours() + ":" +
+		new_date.getMinutes() + ":" + new_date.getSeconds();
+	chart_svg.selectAll("g").filter(".end_time")
+	.append("text")
+	.attr("x",940)
+	.attr("y", 15)
+	.attr("font-family", "sans-serif")
+	.attr("font-size", '15px')
+	.attr("text-anchor", 'middle')
+	.text(date_string);
+
+	new_date = new Date(min_time)
+	date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+		new_date.getFullYear() + " " + new_date.getHours() + ":" +
+		new_date.getMinutes() + ":" + new_date.getSeconds();
+	chart_svg.selectAll("g").filter(".end_time")
+	.append("text")
+	.attr("x",60)
+	.attr("y", 15)
+	.attr("font-family", "sans-serif")
+	.attr("font-size", '15px')
+	.attr("text-anchor", 'middle')
+	.text(date_string);
+}
+
 function create_time_line() {
 	console.log(Location[0])
 	let min_time = d3.min(Location, function(d,i){
@@ -194,18 +241,24 @@ function create_time_line() {
 	});
 	console.log(min_time)
 	console.log(max_time)
+	draw_end_time(min_time, max_time);
+	
 
 	let xScale = d3.time.scale().domain([min_time,max_time]).range([0,100]);
 
 	var timeSlider =  d3.select('#slider7')
 	timeSlider.call(d3.slider().on("slide", function(evt, value) {
 		// slider handle
+		slider_value = value
 		slider_time = xScale.invert(value).getTime();
 		handle_slider();
 	}));
 }
 
 function handle_slider() {
+	// handle time slider
+	handle_time();
+
 	let vehicle_map = {}
 	let count = 0;
 	console.log(Location[0]);

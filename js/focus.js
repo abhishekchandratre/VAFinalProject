@@ -13,6 +13,7 @@ let parent_list = [];
 let selected_node;
 let selected_time;
 let slider_time;
+let slider_value;
 let cries_on_line = [];
 let item_shortage = [];
 let selected_cries = [];
@@ -195,6 +196,7 @@ function process_cries_and_item() {
 	let min_time = Math.min(cries_on_line[0].TS_LOAD, item_shortage[0].TS_LOAD);
 	let max_time = selected_time;
 	console.log(min_time + " " + max_time);
+	draw_end_time(min_time, max_time);
 
 	// add slider
 	let xScale = d3.time.scale().domain([min_time,max_time]).range([0,100]);
@@ -202,6 +204,7 @@ function process_cries_and_item() {
 	timeSlider.call(d3.slider()
 		.value(100)
 		.on("slide", function(evt, value) {
+			slider_value = value;
 			slider_time = xScale.invert(value).getTime();
 			// slider handle
 			handle_slider();
@@ -209,7 +212,57 @@ function process_cries_and_item() {
 	);
 }
 
+function draw_end_time(min_time, max_time) {
+	console.log(max_time);
+	let new_date = new Date(+max_time)
+	console.log(new_date);
+	let date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+		new_date.getFullYear() + " " + new_date.getHours() + ":" +
+		new_date.getMinutes() + ":" + new_date.getSeconds();
+	chart_svg.selectAll("g").filter(".end_time")
+	.append("text")
+	.attr("x",940)
+	.attr("y", 15)
+	.attr("font-family", "sans-serif")
+	.attr("font-size", '15px')
+	.attr("text-anchor", 'middle')
+	.text(date_string);
+
+	new_date = new Date(+min_time)
+	date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+		new_date.getFullYear() + " " + new_date.getHours() + ":" +
+		new_date.getMinutes() + ":" + new_date.getSeconds();
+	chart_svg.selectAll("g").filter(".end_time")
+	.append("text")
+	.attr("x",60)
+	.attr("y", 15)
+	.attr("font-family", "sans-serif")
+	.attr("font-size", '15px')
+	.attr("text-anchor", 'middle')
+	.text(date_string);
+}
+
+function handle_time() {
+	let new_date = new Date(slider_time)
+	let date_string = new_date.getMonth() + "/" + new_date.getDay() + "/" +
+		new_date.getFullYear() + " " + new_date.getHours() + ":" +
+		new_date.getMinutes() + ":" + new_date.getSeconds();
+	chart_svg.selectAll("g").filter(".slider_time").selectAll("*").remove();
+	chart_svg.selectAll("g").filter(".slider_time")
+	.append("text")
+	.attr("x", slider_value * 10)
+	.attr("y", 15)
+	.attr("font-family", "sans-serif")
+	.attr("font-size", '15px')
+	.attr("text-anchor", 'middle')
+	.text(date_string);
+}
+
+
 function handle_slider() {
+	// handle time
+	handle_time();
+
 	// empty required arrays
 	selected_cries = []
 	selected_items = []
@@ -239,6 +292,8 @@ function prepare_for_bar_charts() {
 	// create group for bar elements;
 	chart_svg.append("g").attr("class", "cries_bars");
 	chart_svg.append("g").attr("class", "items_bars");
+	chart_svg.append("g").attr("class", "slider_time");
+	chart_svg.append("g").attr("class", "end_time");
 }
 
 function remove_previous_bars() {
